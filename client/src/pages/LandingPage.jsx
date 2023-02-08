@@ -22,7 +22,7 @@ const LandingPage = () => {
             molestias ut autem, a officiis iste delectus ex ratione dolorem
             officia doloremque.
           </p>
-          <Link to="/" className="btn btn-hero">
+          <Link to="/register" className="btn btn-hero">
             Login/Register
           </Link>
         </div>
