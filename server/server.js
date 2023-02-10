@@ -4,16 +4,27 @@ dotenv.config();
 
 const app = express();
 
-// middlewares import goes here
+// database
+import dataBase from "./database/database.js";
+
+// Routers
+import routerAuth from "./routes/routerAuth.js";
+import routerJob from "./routes/routerJobs.js";
+
+// middle-ware import goes here
 import errorHandlingMiddleware from "./middleware/error-handling.js";
 import middlewareNotFound from "./middleware/not-found.js";
-import dataBase from "./database/database.js";
+
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Welcome!");
 });
 
-// middlewares functions
+app.use("/api/v1/authenticate", routerAuth);
+app.use("/api/v1/jobs", routerJob);
+
+// middle-wares functions
 app.use(middlewareNotFound);
 app.use(errorHandlingMiddleware);
 
