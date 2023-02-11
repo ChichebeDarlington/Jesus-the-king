@@ -1,23 +1,27 @@
 import User from "../models/User.js";
+import { hashPassword } from "../bcrypt/secure.js";
+import { comparePassword } from "../bcrypt/secure.js";
 
 export const register = async (req, res, next) => {
   const { name, email, password } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ msg: "Name is required" });
+  }
+  if (!password) {
+    return res.status(400).json({ msg: "Password is required" });
+  }
+  if (!email) {
+    return res.status(400).json({ msg: "Email is required" });
+  }
+  const emailExist = await User.findOne({ email });
+  if (emailExist) {
+    return res.status(400).json({ msg: "Email already existed" });
+  }
+  const passwordHashed = await hashPassword(password);
+  const user = await new User({ name, email, password: passwordHashed });
   try {
-    if (!name) {
-      return res.status(400).json({ msg: "Name is required" });
-    }
-    if (!password) {
-      return res.status(400).json({ msg: "Password is required" });
-    }
-    if (!email) {
-      return res.status(400).json({ msg: "Email is required" });
-    }
-    const emailExist = await User.findOne({ email });
-    if (emailExist) {
-      return res.status(400).json({ msg: "Email already existed" });
-    }
-    const user = await new User({ name, email, password });
-    user.save();
+    await user.save();
     return res.status(200).json({ user });
   } catch (error) {
     console.log(error);
