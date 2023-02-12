@@ -9,14 +9,19 @@ import {
 } from "./action";
 import reducer from "./reducer";
 
+const user = window.localStorage.getItem("user");
+const token = window.localStorage.getItem("token");
+const userLocation = window.localStorage.getItem("location");
+
 export const initialState = {
   isLoading: false,
   showAlert: true,
   alertText: "",
   alertType: "",
-  user: null,
-  token: null,
-  userLocation: "",
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || "",
+  jobLocation: userLocation || "",
 };
 const AppContext = createContext();
 const AppProvider = ({ children }) => {
@@ -31,6 +36,18 @@ const AppProvider = ({ children }) => {
     setTimeout(() => {
       dispatch({ type: CLEAR_ALERT });
     }, 5000);
+  };
+
+  const saveUserToLocalStorage = ({ user, token, location }) => {
+    window.localStorage.setItem("user", JSON.stringify(user));
+    window.localStorage.setItem("token", JSON.stringify(token));
+    window.localStorage.setItem("location", JSON.stringify(location));
+  };
+
+  const removeUserFromLocalStorage = ({ user, token, location }) => {
+    window.localStorage.removeItem("user");
+    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("location");
   };
 
   const registerUser = async (currentUser) => {
@@ -50,6 +67,7 @@ const AppProvider = ({ children }) => {
           location,
         },
       });
+      saveUserToLocalStorage({ user, token, location });
     } catch (error) {
       console.log(error.response);
       dispatch({
