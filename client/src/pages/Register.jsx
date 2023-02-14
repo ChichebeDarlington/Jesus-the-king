@@ -13,7 +13,7 @@ const initialState = {
 
 const Register = () => {
   const [values, setValues] = useState(initialState);
-  const { isLoading, showAlert, alertDisplay, registerUser, user } =
+  const { isLoading, showAlert, alertDisplay, registerUser, user, loginUser } =
     useContextApp();
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const Register = () => {
     }
     const immediateUser = { name, email, password };
     if (isMember) {
-      console.log("You are a member");
+      loginUser(immediateUser);
     } else {
       registerUser(immediateUser);
     }
